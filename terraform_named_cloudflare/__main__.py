@@ -31,6 +31,8 @@ def comment(record):
 def a(record):
     match = re.match(A, record)
     if match:
+        if match.group(1) in records['A']:
+            return False
         records['A'][match.group(1)] = {
             'name': match.group(1),
             'ttl': match.group(2),
@@ -43,6 +45,8 @@ def a(record):
 def aaaa(record):
     match = re.match(AAAA, record)
     if match:
+        if match.group(1) in records['AAAA']:
+            return False
         records['AAAA'][match.group(1)] = {
             'name': match.group(1),
             'ttl': match.group(2),
@@ -55,6 +59,8 @@ def aaaa(record):
 def cname(record):
     match = re.match(CNAME, record)
     if match:
+        if match.group(1) in records['CNAME']:
+            return False
         records['CNAME'][match.group(1)] = {
             'name': match.group(1),
             'ttl': match.group(2),
@@ -67,6 +73,8 @@ def cname(record):
 def mx(record):
     match = re.match(MX, record)
     if match:
+        if match.group(1) in records['MX']:
+            return False
         records['MX'][match.group(1)] = {
             'name': match.group(1),
             'priority': match.group(3),
@@ -80,6 +88,8 @@ def mx(record):
 def srv(record):
     match = re.match(SRV, record)
     if match:
+        if match.group(2) in records['SRV']:
+            return False
         records['SRV'][match.group(2)] = {
             'name': match.group(2),
             'port': match.group(9),
@@ -97,6 +107,8 @@ def srv(record):
 def txt(record):
     match = re.match(TXT, record)
     if match:
+        if match.group(1) in records['TXT']:
+            return False
         value = match.group(3).replace('"', '')
         if re.match(r'.*DKIM', value):
             value = '; '.join(re.sub(pattern=r'\s+|\\;', repl='', string=value).split(';'))
