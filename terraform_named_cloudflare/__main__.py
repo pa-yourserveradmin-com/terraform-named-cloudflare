@@ -76,7 +76,7 @@ def cname(record):
         resources['CNAME'][resource] = {
             'name': match.group(1),
             'ttl': match.group(2),
-            'value': match.group(3)
+            'value': match.group(3).strip('.')
         }
         return True
     return False
