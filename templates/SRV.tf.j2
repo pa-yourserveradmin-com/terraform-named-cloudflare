@@ -1,0 +1,20 @@
+{%- for record in records -%}
+resource "cloudflare_record" "{{ records[record].name.strip('.').replace('.', '_') }}-SRV" {
+  name = "{{ record }}"
+  ttl  = {{ records[record].ttl }}
+  type = "SRV"
+
+  data {
+    service  = "{{ records[record].service }}"
+    proto    = "{{ records[record].proto }}"
+    name     = var.cloudflare_zone
+    priority = {{ records[record].priority }}
+    weight   = {{ records[record].weight }}
+    port     = {{ records[record].port }}
+    target   = "{{ records[record].target }}"
+  }
+
+  zone_id = var.cloudflare_zone_id
+}
+
+{% endfor -%}

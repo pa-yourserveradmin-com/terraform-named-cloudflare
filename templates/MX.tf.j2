@@ -1,0 +1,11 @@
+{%- for record in records -%}
+resource "cloudflare_record" "{{ records[record].name.strip('.').replace('.', '_') }}-MX" {
+  name     = "{{ record }}"
+  priority = {{ records[record].priority }}
+  ttl      = {{ records[record].ttl }}
+  type     = "MX"
+  value    = "{{ records[record].value }}"
+  zone_id  = var.cloudflare_zone_id
+}
+
+{% endfor -%}
