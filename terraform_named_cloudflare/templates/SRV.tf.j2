@@ -4,7 +4,7 @@ resource "cloudflare_record" "{{ resource }}-SRV" {
   ttl  = {{ resources[resource].ttl }}
   type = "SRV"
 
-  data {
+  data = {
     service  = "{{ resources[resource].service }}"
     proto    = "{{ resources[resource].proto }}"
     name     = var.cloudflare_zone
