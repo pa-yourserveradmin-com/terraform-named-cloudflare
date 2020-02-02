@@ -123,6 +123,20 @@ def parse_arguments():
         required=True,
         type=str
     )
+    parser.add_argument(
+        '-i',
+        '--zone-id',
+        default=str(),
+        help='Optional CloudFlare zone ID',
+        type=str
+    )
+    parser.add_argument(
+        '-n',
+        '--zone-name',
+        default=str(),
+        help='Optional CloudFlare zone name',
+        type=str
+    )
     return parser
 
 
@@ -145,8 +159,11 @@ def parse_zone(zone_file):
                 print(record)
 
 
-def render():
+def render(known_args):
     env = jinja2.Environment(loader=jinja2.PackageLoader('terraform_named_cloudflare', 'templates'))
+    template = env.get_template('variables.tf.j2')
+    with open('variables.tf', 'w') as target:
+        target.write(template.render(cloudflare_zone_id=known_args.zone_id, cloudflare_zone_name=known_args.zone_name))
     for item in records:
         template = env.get_template('{}.tf.j2'.format(item))
         with open('{}.tf'.format(item), 'w') as target:
@@ -156,7 +173,7 @@ def render():
 def main():
     known_args, unknown_args = parse_arguments().parse_known_args()
     parse_zone(zone_file=known_args.file)
-    render()
+    render(known_args)
 
 
 if __name__ == '__main__':
