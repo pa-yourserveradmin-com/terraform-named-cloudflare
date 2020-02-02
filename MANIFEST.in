@@ -1,0 +1,1 @@
+include terraform_named_cloudflare/templates/*.j2
