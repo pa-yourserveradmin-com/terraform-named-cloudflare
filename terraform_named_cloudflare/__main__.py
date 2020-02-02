@@ -127,6 +127,9 @@ def txt(record):
         value = match.group(3).replace('"', '')
         if re.match(r'.*DKIM', value):
             value = '; '.join(re.sub(pattern=r'\s+|\\;', repl='', string=value).split(';'))
+        # Silently ignore TXT records with empty string values as not supported by CloudFlare
+        if not value:
+            return True
         resources['TXT'][resource] = {
             'name': match.group(1),
             'ttl': match.group(2),
