@@ -1,5 +1,5 @@
 {%- for record in records -%}
-resource "cloudflare_record" "{{ records[record].name.strip('.').replace('.', '_') }}-MX" {
+resource "cloudflare_record" "{{ records[record].name.strip('.').replace('.', '_').replace('*', 'star') }}-MX" {
   name     = "{{ record }}"
   priority = {{ records[record].priority }}
   ttl      = {{ records[record].ttl }}

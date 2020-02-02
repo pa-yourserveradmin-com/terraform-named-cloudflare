@@ -1,5 +1,5 @@
 {%- for record in records -%}
-resource "cloudflare_record" "{{ records[record].name.strip('.').replace('.', '_') }}-TXT" {
+resource "cloudflare_record" "{{ records[record].name.strip('.').replace('.', '_').replace('*', 'star') }}-TXT" {
   name    = "{{ record }}"
   ttl     = {{ records[record].ttl }}
   type    = "TXT"
