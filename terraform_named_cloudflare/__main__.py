@@ -11,7 +11,7 @@ MX = re.compile(pattern=r'^([a-zA-z0-9.-]+)\s+(\d+)?\s+?IN\s+MX\s+(\d+)\s+([a-zA
 SRV = re.compile(pattern=r'^(((_.[^.]*).(_[^.][a-z]+)(.[^\s]*)?)\s+(\d+)\s+IN\s+SRV\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*))')
 TXT = re.compile(pattern=r'^([a-zA-z0-9.-]+)\s+(\d+)?\s+?IN\s+TXT\s+(.*)')
 
-records = {
+resources = {
     'A': {},
     'AAAA': {},
     'CNAME': {},
@@ -28,12 +28,22 @@ def comment(record):
     return False
 
 
+def fix(name):
+    name = name.strip('.').replace('.', '_')
+    if re.match(pattern=r'^\d', string=name):
+        name = '_{}'.format(name)
+    if name.startswith('*'):
+        name = name.replace('*', 'star')
+    return name
+
+
 def a(record):
     match = re.match(A, record)
     if match:
-        if match.group(1) in records['A']:
+        resource = fix(match.group(1))
+        if resource in resources['A']:
             return False
-        records['A'][match.group(1)] = {
+        resources['A'][resource] = {
             'name': match.group(1),
             'ttl': match.group(2),
             'value': match.group(3)
@@ -45,9 +55,10 @@ def a(record):
 def aaaa(record):
     match = re.match(AAAA, record)
     if match:
-        if match.group(1) in records['AAAA']:
+        resource = fix(match.group(1))
+        if resource in resources['AAAA']:
             return False
-        records['AAAA'][match.group(1)] = {
+        resources['AAAA'][resource] = {
             'name': match.group(1),
             'ttl': match.group(2),
             'value': match.group(3)
@@ -59,9 +70,10 @@ def aaaa(record):
 def cname(record):
     match = re.match(CNAME, record)
     if match:
-        if match.group(1) in records['CNAME']:
+        resource = fix(match.group(1))
+        if resource in resources['CNAME']:
             return False
-        records['CNAME'][match.group(1)] = {
+        resources['CNAME'][resource] = {
             'name': match.group(1),
             'ttl': match.group(2),
             'value': match.group(3)
@@ -73,9 +85,10 @@ def cname(record):
 def mx(record):
     match = re.match(MX, record)
     if match:
-        if match.group(1) in records['MX']:
+        resource = fix(match.group(1))
+        if resource in resources['MX']:
             return False
-        records['MX'][match.group(1)] = {
+        resources['MX'][resource] = {
             'name': match.group(1),
             'priority': match.group(3),
             'ttl': match.group(2),
@@ -88,9 +101,10 @@ def mx(record):
 def srv(record):
     match = re.match(SRV, record)
     if match:
-        if match.group(2) in records['SRV']:
+        resource = fix(match.group(2))
+        if resource in resources['SRV']:
             return False
-        records['SRV'][match.group(2)] = {
+        resources['SRV'][resource] = {
             'name': match.group(2),
             'port': match.group(9),
             'priority': match.group(7),
@@ -107,12 +121,13 @@ def srv(record):
 def txt(record):
     match = re.match(TXT, record)
     if match:
-        if match.group(1) in records['TXT']:
+        resource = fix(match.group(1))
+        if resource in resources['TXT']:
             return False
         value = match.group(3).replace('"', '')
         if re.match(r'.*DKIM', value):
             value = '; '.join(re.sub(pattern=r'\s+|\\;', repl='', string=value).split(';'))
-        records['TXT'][match.group(1)] = {
+        resources['TXT'][resource] = {
             'name': match.group(1),
             'ttl': match.group(2),
             'value': value
@@ -176,10 +191,10 @@ def render(known_args):
     template = env.get_template('variables.tf.j2')
     with open('variables.tf', 'w') as target:
         target.write(template.render(cloudflare_zone_id=known_args.zone_id, cloudflare_zone_name=known_args.zone_name))
-    for item in records:
+    for item in resources:
         template = env.get_template('{}.tf.j2'.format(item))
         with open('{}.tf'.format(item), 'w') as target:
-            target.write(template.render(records=records[item]))
+            target.write(template.render(resources=resources[item]))
 
 
 def main():
