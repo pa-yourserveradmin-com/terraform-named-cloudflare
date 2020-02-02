@@ -8,7 +8,7 @@ A = re.compile(pattern=r'^([*a-zA-z0-9.-]+)\s+(\d+)?\s+?IN\s+A\s+(\d{1,3}.\d{1,3
 AAAA = re.compile(pattern=r'^([*a-zA-z0-9.-]+)\s+(\d+)?\s+IN\s+AAAA\s+(.[^$]*)')
 CNAME = re.compile(pattern=r'^([*a-zA-z0-9.-]+)\s+(\d+)?\s+?IN\s+CNAME\s+([a-zA-z0-9.-]+)')
 MX = re.compile(pattern=r'^([a-zA-z0-9.-]+)\s+(\d+)?\s+?IN\s+MX\s+(\d+)\s+([a-zA-z0-9.-]+)')
-SRV = re.compile(pattern=r'^(((_.[^.]*).(_[^.][a-z]+)(.[^\s]*)?)\s+(\d+)\s+IN\s+SRV\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*))')
+SRV = re.compile(pattern=r'^((_.[^.]*).(_[^.][a-z]+).?(.[^\s]*)?)\s+(\d+)\s+IN\s+SRV\s+(\d+)\s+(\d+)\s+(\d+)\s+(.*)')
 TXT = re.compile(pattern=r'^([a-zA-z0-9.-]+)\s+(\d+)?\s+?IN\s+TXT\s+(.*)')
 
 resources = {
@@ -101,18 +101,19 @@ def mx(record):
 def srv(record):
     match = re.match(SRV, record)
     if match:
-        resource = fix(match.group(2))
+        resource = fix(match.group(1))
         if resource in resources['SRV']:
             return False
         resources['SRV'][resource] = {
-            'name': match.group(2),
-            'port': match.group(9),
-            'priority': match.group(7),
-            'proto': match.group(4),
-            'service': match.group(3),
-            'target': match.group(10),
-            'ttl': match.group(6),
-            'weight': match.group(8)
+            'data_name': match.group(4),
+            'name': match.group(1),
+            'port': match.group(8),
+            'priority': match.group(6),
+            'proto': match.group(3),
+            'service': match.group(2),
+            'target': match.group(9),
+            'ttl': match.group(5),
+            'weight': match.group(7)
         }
         return True
     return False

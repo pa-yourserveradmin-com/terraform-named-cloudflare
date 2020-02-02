@@ -7,7 +7,7 @@ resource "cloudflare_record" "{{ resource }}-SRV" {
   data = {
     service  = "{{ resources[resource].service }}"
     proto    = "{{ resources[resource].proto }}"
-    name     = var.cloudflare_zone_name
+    name     = {% if resources[resource].data_name %}"{{ resources[resource].data_name }}"{% else %}var.cloudflare_zone_name{% endif %}
     priority = {{ resources[resource].priority }}
     weight   = {{ resources[resource].weight }}
     port     = {{ resources[resource].port }}
