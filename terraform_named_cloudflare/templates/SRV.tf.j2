@@ -7,7 +7,7 @@ resource "cloudflare_record" "{{ resource }}-SRV" {
   data = {
     service  = "{{ resources[resource].service }}"
     proto    = "{{ resources[resource].proto }}"
-    name     = var.cloudflare_zone
+    name     = var.cloudflare_zone_name
     priority = {{ resources[resource].priority }}
     weight   = {{ resources[resource].weight }}
     port     = {{ resources[resource].port }}
