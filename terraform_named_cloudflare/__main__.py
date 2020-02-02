@@ -92,7 +92,7 @@ def mx(record):
             'name': match.group(1),
             'priority': match.group(3),
             'ttl': match.group(2),
-            'value': match.group(4)
+            'value': match.group(4).strip('.')
         }
         return True
     return False
