@@ -36,5 +36,5 @@ setup(
         'scripts/terraform-named-cloudflare'
     ],
     url='https://github.com/pa-yourserveradmin-com/terraform-named-cloudflare',
-    version='0.0.1',
+    version='0.0.2',
 )
