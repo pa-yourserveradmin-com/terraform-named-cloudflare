@@ -12,12 +12,16 @@ To make the result code organized, code separated based on DNS records types.
 
 ### Production
 
-Upload to PyPI is planned, but no releases pushed yet.
+The simplest way to install the module is to use PIP:
+
+```bash
+pip install terraform-named-cloudflare
+```
 
 ### Development
 
-To install the module from sources, just clone the repository, create virtual
-environment and install the module:
+To install the module from sources, just clone the repository and install the
+module:
 
 ```bash
 git clone https://github.com/pa-yourserveradmin-com/terraform-named-cloudflare.git
