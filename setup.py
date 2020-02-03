@@ -15,7 +15,7 @@ setup(
     author='Andrew Poltavchenko',
     author_email='pa@yourserveradmin.com',
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha Copy',
+        'Development Status :: 1 - Planning',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
         "Operating System :: OS Independent",
